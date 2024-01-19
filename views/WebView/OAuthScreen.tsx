@@ -13,6 +13,14 @@ const NAVER = {
 };
 const NaverUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER.clientId}&redirect_uri=${NAVER.redirectUri}&state=${NAVER.state}`;
 
+// Kakao
+const KAKAO = {
+  clientId: '8d5f9b68b32488e75e9be8f7a1af015e',
+  redirectUri: 'http://localhost:8081', // dummy value
+  responseType: 'code',
+};
+const KakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO.clientId}&redirect_uri=${KAKAO.redirectUri}&response_type=${KAKAO.responseType}`;
+
 function OAuthScreen({
   route,
   navigation,
@@ -38,6 +46,31 @@ function OAuthScreen({
           // 로그인 성공시 발급되는 code로 서버 토큰 발급
           if (code) {
             const res = await axios.post(`${baseUrl}/signin/naver`, {code});
+            console.log('[res data]', res.data);
+            // todo: accessToken, refreshToken 저장
+            accessToken = res.data.accessToken;
+            refreshToken = res.data.refreshToken;
+            console.log('[accessToken]', accessToken);
+            console.log('[refreshToken]', refreshToken);
+            navigation!.navigate('Home');
+          }
+        } catch (error) {
+          console.log('[error]', error);
+        }
+      };
+      break;
+
+    case 'kakao':
+      initUrl = KakaoUrl;
+      handleMessage = async event => {
+        const url = event.nativeEvent.url;
+        const code = url.split('code=')[1];
+        console.log('url', url);
+
+        try {
+          // 로그인 성공시 발급되는 code로 서버 토큰 발급
+          if (code) {
+            const res = await axios.post(`${baseUrl}/signin/kakao`, {code});
             console.log('[res data]', res.data);
             // todo: accessToken, refreshToken 저장
             accessToken = res.data.accessToken;

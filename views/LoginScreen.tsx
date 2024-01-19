@@ -33,7 +33,8 @@ function LoginScreen({
         })}
         {SoicalLoginButton({
           platform: 'naver',
-          onPress: () => navigation.navigate('NaverLogin'),
+          onPress: () =>
+            navigation.navigate('OAuthWebView', {platform: 'naver'}),
         })}
       </View>
     </View>

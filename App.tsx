@@ -4,6 +4,7 @@ import React, {useEffect} from 'react';
 import HomeScreen from './views/HomeScreen';
 import LoginScreen from './views/LoginScreen';
 import SplashScreen from 'react-native-splash-screen';
+import OAuthScreen from './views/WebView/OAuthScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +19,16 @@ function App(): React.JSX.Element {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="OAuthWebView"
+          component={OAuthScreen}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

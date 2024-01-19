@@ -7,30 +7,35 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-function LoginScreen(): React.JSX.Element {
+function LoginScreen({
+  navigation,
+}: NativeStackScreenProps<any>): React.JSX.Element {
   return (
-    <View
-      style={{
-        backgroundColor: false ? Colors.black : Colors.white,
-      }}>
-      {SoicalLoginButton({
-        platform: 'naver',
-        onPress: handleNaverLogin,
-      })}
-      {SoicalLoginButton({
-        platform: 'kakao',
-        onPress: handleNaverLogin,
-      })}
-      {SoicalLoginButton({
-        platform: 'google',
-        onPress: handleNaverLogin,
-      })}
-      {SoicalLoginButton({
-        platform: 'apple',
-        onPress: handleNaverLogin,
-      })}
+    <View style={styles.screen}>
+      <Image
+        source={require('../assets/login/MainLogo.png')}
+        style={styles.loginLogo}
+      />
+      <View style={styles.buttonContainer}>
+        {SoicalLoginButton({
+          platform: 'apple',
+          onPress: () => {},
+        })}
+        {SoicalLoginButton({
+          platform: 'google',
+          onPress: () => {},
+        })}
+        {SoicalLoginButton({
+          platform: 'kakao',
+          onPress: () => {},
+        })}
+        {SoicalLoginButton({
+          platform: 'naver',
+          onPress: () => navigation.navigate('NaverLogin'),
+        })}
+      </View>
     </View>
   );
 }
@@ -84,17 +89,19 @@ const SoicalLoginButton = ({
     <TouchableOpacity
       onPress={onPress}
       style={{
-        ...styles.buttonContainer,
+        ...styles.buttonBox,
         backgroundColor: type[platform].color,
         paddingVertical: 15 + (25 - type[platform].iconSize) / 2,
       }}>
-      <Image
-        source={type[platform].logo}
-        style={{
-          width: type[platform].iconSize,
-          height: type[platform].iconSize,
-        }}
-      />
+      <View style={styles.iconBox}>
+        <Image
+          source={type[platform].logo}
+          style={{
+            width: type[platform].iconSize,
+            height: type[platform].iconSize,
+          }}
+        />
+      </View>
       <Text style={{...styles.buttonText, color: type[platform].textColor}}>
         {type[platform].title}
       </Text>
@@ -103,7 +110,24 @@ const SoicalLoginButton = ({
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex: 1,
+  },
+  loginLogo: {
+    width: '80%',
+    height: undefined,
+    aspectRatio: 2 / 1,
+    marginTop: '45%',
+  },
   buttonContainer: {
+    flex: 1,
+    flexDirection: 'column-reverse',
+    alignItems: 'center',
+    marginBottom: 80,
+  },
+  buttonBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -118,6 +142,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
   },
+  iconBox: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttonText: {
     width: '92%',
     textAlign: 'center',
@@ -126,7 +155,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-const handleNaverLogin = () => {};
 
 export default LoginScreen;

@@ -2,6 +2,7 @@ import {appleAuth} from '@invertase/react-native-apple-authentication';
 import axios from 'axios';
 import {baseUrl} from './axios.service';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function handleAppleLogin(
   navigation: NativeStackNavigationProp<any>,
@@ -27,11 +28,8 @@ export async function handleAppleLogin(
         }`,
       });
       console.log('[res data]', res.data);
-      // todo: accessToken, refreshToken 저장
-      const accessToken = res.data.accessToken;
-      const refreshToken = res.data.refreshToken;
-      console.log('[accessToken]', accessToken);
-      console.log('[refreshToken]', refreshToken);
+      await AsyncStorage.setItem('accessToken', res.data.accessToken);
+      await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
       navigation!.navigate('Home');
     } catch (error) {
       console.log('[error]', error);

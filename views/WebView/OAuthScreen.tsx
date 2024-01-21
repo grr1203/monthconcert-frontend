@@ -21,6 +21,16 @@ const KAKAO = {
 };
 const KakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO.clientId}&redirect_uri=${KAKAO.redirectUri}&response_type=${KAKAO.responseType}`;
 
+// Google
+const GOOGLE = {
+  clientId:
+    '1075559808467-m3csfhuqab93us90t07jb0l008rasfs3.apps.googleusercontent.com',
+  redirectUri: 'http://localhost:8081', // dummy value
+  responseType: 'code',
+  scope: 'email profile',
+};
+const GoogleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE.clientId}&redirect_uri=${GOOGLE.redirectUri}&response_type=${GOOGLE.responseType}&scope=${GOOGLE.scope}`;
+
 function OAuthScreen({
   route,
   navigation,
@@ -84,6 +94,32 @@ function OAuthScreen({
         }
       };
       break;
+
+    case 'google':
+      initUrl = GoogleUrl;
+      handleMessage = async event => {
+        const url = event.nativeEvent.url;
+        const code = decodeURIComponent(url.split('code=')[1].split('&')[0]);
+        console.log('url', url);
+        console.log('code', code);
+
+        try {
+          // 로그인 성공시 발급되는 code로 서버 토큰 발급
+          if (code) {
+            const res = await axios.post(`${baseUrl}/signin/google`, {code});
+            console.log('[res data]', res.data);
+            // todo: accessToken, refreshToken 저장
+            accessToken = res.data.accessToken;
+            refreshToken = res.data.refreshToken;
+            console.log('[accessToken]', accessToken);
+            console.log('[refreshToken]', refreshToken);
+            navigation!.navigate('Home');
+          }
+        } catch (error) {
+          console.log('[error]', error);
+        }
+      };
+      break;
   }
 
   return (
@@ -91,6 +127,7 @@ function OAuthScreen({
       source={{uri: initUrl!}}
       onMessage={handleMessage!}
       injectedJavaScript="window.ReactNativeWebView.postMessage('message')"
+      userAgent="Mozilla/5.0 (Linux; Android 10; SM-G975N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Mobile Safari/537.36"
     />
   );
 }

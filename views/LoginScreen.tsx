@@ -26,7 +26,8 @@ function LoginScreen({
         })}
         {SoicalLoginButton({
           platform: 'google',
-          onPress: () => {},
+          onPress: () =>
+            navigation.navigate('OAuthWebView', {platform: 'google'}),
         })}
         {SoicalLoginButton({
           platform: 'kakao',

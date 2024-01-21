@@ -27,7 +27,7 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="OAuthWebView"
           component={OAuthScreen}
-          options={{headerShown: false}}
+          options={{headerTitle: ''}}
         />
       </Stack.Navigator>
     </NavigationContainer>

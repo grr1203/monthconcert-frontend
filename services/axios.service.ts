@@ -50,8 +50,10 @@ privateAxiosInstance.interceptors.response.use(
 );
 
 export const refreshAccessToken = async (refreshToken: string) => {
-  const res = await axios.post(`${baseUrl}/token`, {refreshToken});
-  const accessToken = res.data.token;
+  const res = await axios.get(`${baseUrl}/token/access`, {
+    params: {refreshToken},
+  });
+  const accessToken = res.data.accessToken;
   await AsyncStorage.setItem('accessToken', accessToken);
   return accessToken;
 };

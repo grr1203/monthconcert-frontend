@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {handleAppleLogin} from '../services/login.service';
 
 function LoginScreen({
   navigation,
@@ -21,7 +22,7 @@ function LoginScreen({
       <View style={styles.buttonContainer}>
         {SoicalLoginButton({
           platform: 'apple',
-          onPress: () => {},
+          onPress: () => handleAppleLogin(navigation),
         })}
         {SoicalLoginButton({
           platform: 'google',

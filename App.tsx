@@ -57,35 +57,43 @@ function HomeTabs() {
           shadowRadius: 2,
           paddingVertical: 15,
         },
+        tabBarActiveTintColor: '#000',
+        tabBarInactiveTintColor: '#999',
       }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{tabBarIcon: HomeIcon}}
+        options={{tabBarIcon: ({color}) => HomeIcon(color)}}
       />
       <Tab.Screen
         name="MyCalendar"
         component={HomeScreen}
-        options={{tabBarIcon: MyCalendarIcon}}
+        options={{tabBarIcon: ({color}) => MyCalendarIcon(color)}}
       />
       <Tab.Screen
         name="AddArtist"
         component={HomeScreen}
-        options={{tabBarIcon: AddArtistIcon}}
+        options={{tabBarIcon: ({color}) => AddArtistIcon(color)}}
       />
       <Tab.Screen
         name="MyPage"
         component={MypageScreen}
-        options={{tabBarIcon: MyPageIcon}}
+        options={{tabBarIcon: ({color}) => MyPageIcon(color)}}
       />
     </Tab.Navigator>
   );
 }
-const HomeIcon = () => <OcticonsIcon name="home" size={30} color="#000" />;
-const MyCalendarIcon = () => <OcticonsIcon name="calendar" size={30} />;
-const AddArtistIcon = () => (
-  <MaterialCommunityIcon name="account-music-outline" size={38} />
+const HomeIcon = (color: string) => (
+  <OcticonsIcon name="home" size={30} color={color} />
 );
-const MyPageIcon = () => <OcticonsIcon name="person" size={30} />;
+const MyCalendarIcon = (color: string) => (
+  <OcticonsIcon name="calendar" size={30} color={color} />
+);
+const AddArtistIcon = (color: string) => (
+  <MaterialCommunityIcon name="account-music-outline" size={38} color={color} />
+);
+const MyPageIcon = (color: string) => (
+  <OcticonsIcon name="person" size={30} color={color} />
+);
 
 export default App;

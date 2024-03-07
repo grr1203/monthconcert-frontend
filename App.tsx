@@ -9,6 +9,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MypageScreen from './views/MyPageScreen';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AddArtistScreen from './views/AddArtistScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,7 +73,7 @@ function HomeTabs() {
       />
       <Tab.Screen
         name="AddArtist"
-        component={HomeScreen}
+        component={AddArtistScreen}
         options={{tabBarIcon: ({color}) => AddArtistIcon(color)}}
       />
       <Tab.Screen

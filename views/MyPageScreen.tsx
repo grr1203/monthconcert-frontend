@@ -73,11 +73,11 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   profileInfo: {
-    fontFamily: 'NanumBarunGothic',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 20,
   },
   logoutButton: {
-    fontFamily: 'NanumBarunGothic',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 16,
     color: 'grey',
     paddingHorizontal: 10,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   menuText: {
-    fontFamily: 'NanumBarunGothic',
+    fontFamily: 'Pretendard-Regular',
     fontSize: 16,
   },
 });

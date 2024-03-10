@@ -1,7 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import HomeScreen from './views/HomeScreen';
 import LoginScreen from './views/LoginScreen';
 import SplashScreen from 'react-native-splash-screen';
 import OAuthScreen from './views/WebView/OAuthScreen';
@@ -10,6 +9,8 @@ import MypageScreen from './views/MyPageScreen';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AddArtistScreen from './views/AddArtistScreen';
+import InstagramScreen from './views/WebView/InstagramScreen';
+import CalendarScreen from './views/CalendarScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,7 +38,12 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="OAuthWebView"
           component={OAuthScreen}
-          options={{headerTitle: ''}}
+          options={{headerTitle: '', headerBackTitleVisible: false}}
+        />
+        <Stack.Screen
+          name="InstagramWebView"
+          component={InstagramScreen}
+          options={{headerTitle: '', headerBackTitleVisible: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -63,12 +69,12 @@ function HomeTabs() {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={CalendarScreen}
         options={{tabBarIcon: ({color}) => HomeIcon(color)}}
       />
       <Tab.Screen
         name="MyCalendar"
-        component={HomeScreen}
+        component={CalendarScreen}
         options={{tabBarIcon: ({color}) => MyCalendarIcon(color)}}
       />
       <Tab.Screen

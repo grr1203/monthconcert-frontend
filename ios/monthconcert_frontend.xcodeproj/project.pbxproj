@@ -44,6 +44,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-monthconcert_frontend.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-monthconcert_frontend.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = monthconcert_frontend/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-monthconcert_frontend-monthconcert_frontendTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-monthconcert_frontend-monthconcert_frontendTests.release.xcconfig"; path = "Target Support Files/Pods-monthconcert_frontend-monthconcert_frontendTests/Pods-monthconcert_frontend-monthconcert_frontendTests.release.xcconfig"; sourceTree = "<group>"; };
+		8A59A99A2B9983CD00EDC9AF /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		8A6405BE2B5A6A8C0047528A /* monthconcert_frontend.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = monthconcert_frontend.entitlements; path = monthconcert_frontend/monthconcert_frontend.entitlements; sourceTree = "<group>"; };
 		8A6405E62B5D57460047528A /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		8A6405E72B5D57460047528A /* FontAwesome6_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome6_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf"; sourceTree = "<group>"; };
@@ -140,6 +141,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8A59A99A2B9983CD00EDC9AF /* Config.xcconfig */,
 				8A64060C2B5E33FB0047528A /* fonts */,
 				13B07FAE1A68108700A75B9A /* monthconcert_frontend */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -587,6 +589,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8A59A99A2B9983CD00EDC9AF /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -663,6 +666,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8A59A99A2B9983CD00EDC9AF /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

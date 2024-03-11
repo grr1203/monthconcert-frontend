@@ -11,6 +11,7 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import AddArtistScreen from './views/AddArtistScreen';
 import InstagramScreen from './views/WebView/InstagramScreen';
 import CalendarScreen from './views/CalendarScreen';
+import HomeScreen from './views/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,7 +70,7 @@ function HomeTabs() {
       }}>
       <Tab.Screen
         name="Home"
-        component={CalendarScreen}
+        component={HomeScreen}
         options={{tabBarIcon: ({color}) => HomeIcon(color)}}
       />
       <Tab.Screen

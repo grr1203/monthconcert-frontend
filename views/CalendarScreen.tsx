@@ -32,6 +32,8 @@ function CalendarScreen({
     console.log('[res data]', res.data);
     if (Object.keys(res.data.monthConcert).length > 0) {
       setConcertObject(res.data.monthConcert);
+    } else if (Object.keys(res.data.monthConcert).length === 0) {
+      setConcertObject({});
     }
   };
 

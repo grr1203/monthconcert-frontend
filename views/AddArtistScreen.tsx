@@ -280,12 +280,12 @@ const styles = StyleSheet.create({
   },
 
   addRequestButton: {
-    borderRadius: 20,
+    borderRadius: 10,
     marginTop: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     elevation: 2,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#222',
     fontFamily: 'NanumBarunGothic',
     fontSize: 15,
   },

@@ -27,7 +27,7 @@ const GOOGLE = {
   clientId:
     '1075559808467-m3csfhuqab93us90t07jb0l008rasfs3.apps.googleusercontent.com',
   redirectUri: 'http://localhost:8081', // dummy value
-  responseType: 'code',
+  responseType: 'token',
   scope: 'email profile',
 };
 const GoogleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE.clientId}&redirect_uri=${GOOGLE.redirectUri}&response_type=${GOOGLE.responseType}&scope=${GOOGLE.scope}`;

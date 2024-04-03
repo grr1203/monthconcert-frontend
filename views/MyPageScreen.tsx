@@ -1,3 +1,4 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {
   Image,
@@ -9,7 +10,12 @@ import {
 } from 'react-native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
-function MyPageScreen() {
+function MyPageScreen({
+  navigation,
+}: NativeStackScreenProps<any>): React.JSX.Element {
+  const TermsOfUseUrl =
+    'https://www.ftc.go.kr/solution/skin/doc.html?fn=b5bbcffdef4f9e856121b2ba1c0089df8c1dac13565ee8e66ba6d0ab318c011f&rs=/fileupload/data/result/BBSMSTR_000000002320/';
+
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -22,14 +28,18 @@ function MyPageScreen() {
             <Text style={styles.profileInfo}>홍길동</Text>
           </View>
           <View>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.logoutButton}>로그아웃{'  >'}</Text>
             </TouchableOpacity>
           </View>
         </View>
         {[
-          Menu('이용약관', () => {}),
-          Menu('고객센터', () => {}),
+          Menu('이용약관', () =>
+            navigation.navigate('InstagramWebView', {
+              postingUrl: TermsOfUseUrl,
+            }),
+          ),
+          // Menu('고객센터', () => {}),
           Menu('회원탈퇴', () => {}, {color: '#FF2222'}),
         ]}
       </View>

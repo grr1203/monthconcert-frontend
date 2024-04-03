@@ -162,7 +162,7 @@ function CalendarScreen({
                                 />
                                 <View style={styles.artistOverlay}>
                                   <Text style={styles.artistText}>
-                                    {concert.artist_name}
+                                    {concert.artistName}
                                   </Text>
                                 </View>
                               </TouchableOpacity>

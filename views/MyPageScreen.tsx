@@ -1,20 +1,40 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import {
+  getJWTHeaderFromLocalStorage,
+  privateAxiosInstance,
+} from '../services/axios.service';
 
 function MyPageScreen({
   navigation,
 }: NativeStackScreenProps<any>): React.JSX.Element {
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
   const TermsOfUseUrl =
     'https://www.ftc.go.kr/solution/skin/doc.html?fn=b5bbcffdef4f9e856121b2ba1c0089df8c1dac13565ee8e66ba6d0ab318c011f&rs=/fileupload/data/result/BBSMSTR_000000002320/';
+
+  const deleteUser = async () => {
+    const res = await privateAxiosInstance.delete('/user', {
+      headers: await getJWTHeaderFromLocalStorage(),
+    });
+    console.log('[res data]', res.data);
+    if (res.status === 200) {
+      setDeleteModalVisible(false);
+      navigation.navigate('Login');
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -40,9 +60,30 @@ function MyPageScreen({
             }),
           ),
           // Menu('고객센터', () => {}),
-          Menu('회원탈퇴', () => {}, {color: '#FF2222'}),
+          Menu('회원탈퇴', () => setDeleteModalVisible(true), {
+            color: '#FF2222',
+          }),
         ]}
       </View>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={deleteModalVisible}
+        onRequestClose={() => setDeleteModalVisible(!deleteModalVisible)}>
+        <TouchableWithoutFeedback // 모달 바깥 부분 클릭 시 모달 닫기
+          onPress={() => setDeleteModalVisible(!deleteModalVisible)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text className="text-base">정말 탈퇴하시겠습니까? </Text>
+              <Pressable
+                style={[styles.deleteRequestButton]}
+                onPress={deleteUser}>
+                <Text style={styles.textStyle}>탈퇴하기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </ScrollView>
   );
 }
@@ -105,6 +146,42 @@ const styles = StyleSheet.create({
   menuText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'stretch',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  deleteRequestButton: {
+    borderRadius: 10,
+    marginTop: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    elevation: 2,
+    backgroundColor: '#EE5555',
+    fontFamily: 'NanumBarunGothic',
+    fontSize: 15,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

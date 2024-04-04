@@ -38,16 +38,9 @@ function CalendarScreen({
   };
 
   useEffect(() => {
-    try {
-      // calendar api 호출 (check login token)
-      const date = new Date();
-      getCalendar(date.getFullYear(), date.getMonth() + 1);
-    } catch (error) {
-      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
-      console.log('[error]', error);
-      navigation.navigate('Login');
-    }
-  }, [navigation]);
+    const date = new Date();
+    getCalendar(date.getFullYear(), date.getMonth() + 1);
+  }, []);
 
   const goToPrevMonth = () => {
     const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;

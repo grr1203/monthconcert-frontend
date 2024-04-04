@@ -526,7 +526,7 @@
 				DEVELOPMENT_TEAM = 2F9B73Y3J6;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = monthconcert_frontend/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "이번달콘서트";
+				INFOPLIST_KEY_CFBundleDisplayName = "이번달 콘서트";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -563,7 +563,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2F9B73Y3J6;
 				INFOPLIST_FILE = monthconcert_frontend/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "이번달콘서트";
+				INFOPLIST_KEY_CFBundleDisplayName = "이번달 콘서트";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

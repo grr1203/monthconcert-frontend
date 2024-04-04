@@ -21,23 +21,28 @@ function HomeScreen({
 
   // 콘서트 목록 조회
   const getCalendar = async (year: number, month: number, first: boolean) => {
-    console.log('loading', loading);
     if (loading) {
       return;
     }
     setLoading(true);
 
-    const res = await privateAxiosInstance.get('/calendar', {
-      params: {year, month},
-      headers: await getJWTHeaderFromLocalStorage(),
-    });
-    console.log('[res data]', res.data);
+    let res: any;
+    try {
+      res = await privateAxiosInstance.get('/calendar', {
+        params: {year, month},
+        headers: await getJWTHeaderFromLocalStorage(),
+      });
+      console.log('[res data]', res.data);
+    } catch (error) {
+      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
+      console.log('[error]', error);
+      navigation.navigate('Login');
+      return;
+    }
     const concertDayArray = Object.keys(res.data.monthConcert);
     const concertArrayToBeAdd: object[] = [];
     if (concertDayArray.length > 0) {
       concertDayArray.forEach(day => {
-        console.log('[day]', day);
-        console.log('[concert]', res.data.monthConcert[day]);
         // 최초 조회시 이번달의 오늘 이후 날짜만 필터링
         if (first) {
           const now = new Date();
@@ -69,16 +74,10 @@ function HomeScreen({
   };
 
   useEffect(() => {
-    try {
-      // calendar api 호출 (check login token)
-      const date = new Date();
-      (async () =>
-        await getCalendar(date.getFullYear(), date.getMonth() + 1, true))();
-    } catch (error) {
-      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
-      console.log('[error]', error);
-      navigation.navigate('Login');
-    }
+    // calendar api 호출 (check login token)
+    const date = new Date();
+    (async () =>
+      await getCalendar(date.getFullYear(), date.getMonth() + 1, true))();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
@@ -139,7 +138,10 @@ function ConcertCard({
       className="flex flex-col items-center gap-2 mt-8 border-x-2">
       <TouchableOpacity
         onPress={() => navigation.navigate('InstagramWebView', {postingUrl})}>
-        <Image source={{uri: postingImageUrl}} className="w-80 h-80" />
+        <Image
+          source={{uri: postingImageUrl}}
+          className="w-80 h-80 rounded-md"
+        />
       </TouchableOpacity>
       <Text className="font-bold text-xl pt-4">{artistName}</Text>
       <Text className="text-[#777] mb-8">@{artistAccount}</Text>

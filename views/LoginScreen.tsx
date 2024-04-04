@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Image,
   ImageSourcePropType,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,10 +21,11 @@ function LoginScreen({
         style={styles.loginLogo}
       />
       <View style={styles.buttonContainer}>
-        {SoicalLoginButton({
-          platform: 'apple',
-          onPress: () => handleAppleLogin(navigation),
-        })}
+        {Platform.OS === 'ios' &&
+          SoicalLoginButton({
+            platform: 'apple',
+            onPress: () => handleAppleLogin(navigation),
+          })}
         {SoicalLoginButton({
           platform: 'google',
           onPress: () =>
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     width: '80%',
     height: undefined,
     aspectRatio: 2 / 1,
-    marginTop: '45%',
+    marginTop: Platform.OS === 'ios' ? '45%' : '35%',
   },
   buttonContainer: {
     flex: 1,

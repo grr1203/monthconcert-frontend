@@ -21,24 +21,18 @@ function HomeScreen({
 
   // 콘서트 목록 조회
   const getCalendar = async (year: number, month: number, first: boolean) => {
+    console.log('[getCalendar]', year, month);
     if (loading) {
       return;
     }
     setLoading(true);
 
-    let res: any;
-    try {
-      res = await privateAxiosInstance.get('/calendar', {
-        params: {year, month},
-        headers: await getJWTHeaderFromLocalStorage(),
-      });
-      console.log('[res data]', res.data);
-    } catch (error) {
-      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
-      console.log('[error]', error);
-      navigation.navigate('Login');
-      return;
-    }
+    const res = await privateAxiosInstance.get('/calendar', {
+      params: {year, month},
+      headers: await getJWTHeaderFromLocalStorage(),
+    });
+    console.log('[res data]', res.data);
+
     const concertDayArray = Object.keys(res.data.monthConcert);
     const concertArrayToBeAdd: object[] = [];
     if (concertDayArray.length > 0) {
@@ -105,8 +99,10 @@ function HomeScreen({
   return (
     <SafeAreaView className="bg-[#FFF]">
       <ScrollView onScroll={handleScroll} scrollEventThrottle={0}>
-        <View className="w-screen px-8 pb-4">
-          <Text className="text-xl font-[Pretendard-Regular]">Now</Text>
+        <View className="w-screen px-8 pb-4 pt-4">
+          <Text className="text-xl font-[Pretendard-Regular] font-semibold text-[#333]">
+            Now
+          </Text>
         </View>
         <View className="border-b border-gray-100 w-screen" />
         <View className="flex flex-col items-center justify-center">
@@ -143,7 +139,7 @@ function ConcertCard({
           className="w-80 h-80 rounded-md"
         />
       </TouchableOpacity>
-      <Text className="font-bold text-xl pt-4">{artistName}</Text>
+      <Text className="font-bold text-xl text-[#333] pt-4">{artistName}</Text>
       <Text className="text-[#777] mb-8">@{artistAccount}</Text>
       <View className="border-8 border-gray-100 w-screen" />
     </View>

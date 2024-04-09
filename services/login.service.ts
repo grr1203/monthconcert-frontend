@@ -1,6 +1,10 @@
 import {appleAuth} from '@invertase/react-native-apple-authentication';
 import axios from 'axios';
-import {baseUrl} from './axios.service';
+import {
+  baseUrl,
+  getJWTHeaderFromLocalStorage,
+  privateAxiosInstance,
+} from './axios.service';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -34,5 +38,22 @@ export async function handleAppleLogin(
     } catch (error) {
       console.log('[error]', error);
     }
+  }
+}
+
+export async function checkLogin(navigation: any) {
+  console.log('[checkLogin]');
+  try {
+    const date = new Date();
+    const res = await privateAxiosInstance.get('/calendar', {
+      params: {year: date.getFullYear(), month: date.getMonth() + 1},
+      headers: await getJWTHeaderFromLocalStorage(),
+    });
+    console.log('[res data]', res.data);
+  } catch (error) {
+    // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
+    console.log('[error]', error);
+    navigation.navigate('Login');
+    return;
   }
 }

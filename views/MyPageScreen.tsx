@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -20,10 +20,29 @@ import {
 function MyPageScreen({
   navigation,
 }: NativeStackScreenProps<any>): React.JSX.Element {
+  const [user, setUser] = useState<any>(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const TermsOfUseUrl =
     'https://www.ftc.go.kr/solution/skin/doc.html?fn=b5bbcffdef4f9e856121b2ba1c0089df8c1dac13565ee8e66ba6d0ab318c011f&rs=/fileupload/data/result/BBSMSTR_000000002320/';
+
+  useEffect(() => {
+    (async () => {
+      try {
+        // 유저 정보 조회
+        const res = await privateAxiosInstance.get('/user', {
+          headers: await getJWTHeaderFromLocalStorage(),
+        });
+        console.log('[res data]', res.data);
+        setUser(res.data.user);
+      } catch (error) {
+        // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
+        console.log('[error]', error);
+        navigation.navigate('Login');
+        return;
+      }
+    })();
+  }, [navigation]);
 
   const deleteUser = async () => {
     const res = await privateAxiosInstance.delete('/user', {
@@ -45,7 +64,9 @@ function MyPageScreen({
               source={require('../assets/user/UserProfileDefault.png')}
               style={styles.profileImage}
             />
-            <Text style={styles.profileInfo}>홍길동</Text>
+            <Text style={styles.profileInfo}>
+              {user?.user_name ?? '이름을 입력하세요'}
+            </Text>
           </View>
           <View>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>

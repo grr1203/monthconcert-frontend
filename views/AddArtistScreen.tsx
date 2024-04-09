@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Modal,
   Pressable,
@@ -14,16 +14,22 @@ import {
   getJWTHeaderFromLocalStorage,
   privateAxiosInstance,
 } from '../services/axios.service';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {checkLogin} from '../services/login.service';
 
 type Artist = {artist_name: string; instagram_account: string};
 
-function AddArtistScreen() {
+function AddArtistScreen({navigation}: NativeStackScreenProps<any>) {
   const [SearchedCount, setIsSearchedCount] = useState(-1);
   const [searchText, setSearchText] = useState('');
   const [searchedArtistArray, setSearchedArtistArray] = useState<Artist[]>([]);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [artistName, setArtistName] = useState('');
   const [artistAccount, setArtistAccount] = useState('');
+
+  useEffect(() => {
+    (async () => await checkLogin(navigation))();
+  }, [navigation]);
 
   const handleSearch = async () => {
     try {

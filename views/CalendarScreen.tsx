@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
@@ -25,22 +24,30 @@ function CalendarScreen({
   const [concertObject, setConcertObject] = useState<any>({});
 
   const getCalendar = async (year: number, month: number) => {
-    const res = await privateAxiosInstance.get('/calendar', {
-      params: {year, month},
-      headers: await getJWTHeaderFromLocalStorage(),
-    });
-    console.log('[res data]', res.data);
-    if (Object.keys(res.data.monthConcert).length > 0) {
-      setConcertObject(res.data.monthConcert);
-    } else if (Object.keys(res.data.monthConcert).length === 0) {
-      setConcertObject({});
+    try {
+      const res = await privateAxiosInstance.get('/calendar', {
+        params: {year, month},
+        headers: await getJWTHeaderFromLocalStorage(),
+      });
+      console.log('[res data]', res.data);
+      if (Object.keys(res.data.monthConcert).length > 0) {
+        setConcertObject(res.data.monthConcert);
+      } else if (Object.keys(res.data.monthConcert).length === 0) {
+        setConcertObject({});
+      }
+    } catch (error) {
+      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
+      console.log('[error]', error);
+      navigation.navigate('Login');
+      return;
     }
   };
 
   useEffect(() => {
     const date = new Date();
     getCalendar(date.getFullYear(), date.getMonth() + 1);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigation]);
 
   const goToPrevMonth = () => {
     const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
@@ -192,7 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerMonth: {
-    fontFamily,
+    fontFamily: 'UhBeeZZIBA-Regular',
     fontSize: 60,
     fontWeight,
     color: '#222222',
@@ -257,7 +264,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
   },
   artistText: {
-    fontFamily: 'Pretendard-Regular',
+    fontFamily,
     fontWeight,
     fontSize: 13,
     color: '#FFFFFF',

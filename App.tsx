@@ -12,6 +12,7 @@ import AddArtistScreen from './views/AddArtistScreen';
 import InstagramScreen from './views/WebView/InstagramScreen';
 import CalendarScreen from './views/CalendarScreen';
 import HomeScreen from './views/HomeScreen';
+import {Platform} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -58,12 +59,12 @@ function HomeTabs() {
         headerShown: false,
         tabBarLabel: () => null,
         tabBarStyle: {
-          height: 80,
+          height: Platform.OS === 'ios' ? 80 : 65,
           shadowColor: '#000',
           shadowOffset: {width: 2, height: 2},
           shadowOpacity: 0.2,
           shadowRadius: 2,
-          paddingVertical: 15,
+          paddingVertical: Platform.OS === 'ios' ? 10 : 0,
         },
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: '#999',

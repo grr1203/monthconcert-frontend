@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  getJWTHeaderFromLocalStorage,
-  privateAxiosInstance,
-} from '../services/axios.service';
+import axios from 'axios';
+import {checkLogin} from '../services/login.service';
+import {baseUrl} from '../services/axios.service';
 
 function CalendarScreen({
   navigation,
@@ -24,22 +23,13 @@ function CalendarScreen({
   const [concertObject, setConcertObject] = useState<any>({});
 
   const getCalendar = async (year: number, month: number) => {
-    try {
-      const res = await privateAxiosInstance.get('/calendar', {
-        params: {year, month},
-        headers: await getJWTHeaderFromLocalStorage(),
-      });
-      console.log('[res data]', res.data);
-      if (Object.keys(res.data.monthConcert).length > 0) {
-        setConcertObject(res.data.monthConcert);
-      } else if (Object.keys(res.data.monthConcert).length === 0) {
-        setConcertObject({});
-      }
-    } catch (error) {
-      // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
-      console.log('[error]', error);
-      navigation.navigate('Login');
-      return;
+    await checkLogin(navigation);
+    const res = await axios.get(`${baseUrl}/calendar`, {params: {year, month}});
+    console.log('[res data]', res.data);
+    if (Object.keys(res.data.monthConcert).length > 0) {
+      setConcertObject(res.data.monthConcert);
+    } else if (Object.keys(res.data.monthConcert).length === 0) {
+      setConcertObject({});
     }
   };
 

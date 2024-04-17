@@ -44,9 +44,7 @@ export async function handleAppleLogin(
 export async function checkLogin(navigation: any) {
   console.log('[checkLogin]');
   try {
-    const date = new Date();
-    const res = await privateAxiosInstance.get('/calendar', {
-      params: {year: date.getFullYear(), month: date.getMonth() + 1},
+    const res = await privateAxiosInstance.get('/user', {
       headers: await getJWTHeaderFromLocalStorage(),
     });
     console.log('[res data]', res.data);

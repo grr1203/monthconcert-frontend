@@ -7,11 +7,9 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {
-  getJWTHeaderFromLocalStorage,
-  privateAxiosInstance,
-} from '../services/axios.service';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import axios from 'axios';
+import {baseUrl} from '../services/axios.service';
 
 function HomeScreen({
   navigation,
@@ -27,10 +25,7 @@ function HomeScreen({
     }
     setLoading(true);
 
-    const res = await privateAxiosInstance.get('/calendar', {
-      params: {year, month},
-      headers: await getJWTHeaderFromLocalStorage(),
-    });
+    const res = await axios.get(`${baseUrl}/calendar`, {params: {year, month}});
     console.log('[res data]', res.data);
 
     const concertDayArray = Object.keys(res.data.monthConcert);
@@ -63,8 +58,8 @@ function HomeScreen({
         });
       });
       setConcertArray([...concertArray, ...concertArrayToBeAdd]);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

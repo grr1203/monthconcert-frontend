@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileImage: {
-    width: 75,
-    height: 75,
-    marginRight: 15,
+    width: 40,
+    height: 40,
+    marginRight: 20,
   },
   profileInfo: {
     fontFamily: 'Pretendard-Regular',

@@ -1,4 +1,8 @@
 {
   "name": "monthconcert_frontend",
-  "displayName": "monthconcert_frontend"
+  "displayName": "monthconcert_frontend",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "",
+    "ios_app_id": "ca-app-pub-7350981373953499~6975334167"
+  }
 }

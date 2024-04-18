@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import WebView from 'react-native-webview';
 import {RouteProp} from '@react-navigation/native';
+import {interstitial} from '../../services/ad.service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function InstagramScreen({
   route,
@@ -8,6 +10,31 @@ function InstagramScreen({
   route?: RouteProp<{InstagramWebView: {postingUrl: string}}>;
 }): React.JSX.Element {
   const {postingUrl} = route!.params;
+
+  useEffect(() => {
+    interstitial.load();
+    (async () => {
+      // 2024-01-01 5 형식
+      const adCountString = await AsyncStorage.getItem(
+        'todayAdCount_InstagramWebview',
+      );
+      console.log('[adCountString]', adCountString);
+
+      const now = new Date();
+      now.setUTCHours(0, 0, 0, 0);
+      const adDate = adCountString ? new Date(adCountString.split(' ')[0]) : '';
+      const adCount = adCountString ? parseInt(adCountString.split(' ')[1]) : 0;
+      if (adDate < now || adCount <= 3) {
+        await AsyncStorage.setItem(
+          'todayAdCount_InstagramWebview',
+          `${now.toISOString().split('T')[0]} ${adCount + 1}`,
+        );
+        return;
+      } else {
+        await interstitial.show();
+      }
+    })();
+  }, []);
 
   return (
     <WebView

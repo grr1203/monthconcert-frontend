@@ -16,6 +16,7 @@ import {
 } from '../services/axios.service';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {checkLogin} from '../services/login.service';
+import {BannerAD} from '../lib/ad/BannerAd';
 
 type Artist = {artist_name: string; instagram_account: string};
 
@@ -99,6 +100,7 @@ function AddArtistScreen({navigation}: NativeStackScreenProps<any>) {
           </TouchableOpacity>
         </View>
       )}
+      <BannerAD />
 
       <Modal
         animationType="none"
@@ -165,6 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   searchContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -183,12 +186,12 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: 'NanumBarunGothic',
-    marginTop: 15,
+    paddingBottom: 50,
     color: '#AAA',
   },
   searchResultContainer: {
     width: '100%',
-    flex: 1,
+    flex: 19,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },

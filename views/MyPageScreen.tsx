@@ -16,6 +16,7 @@ import {
   getJWTHeaderFromLocalStorage,
   privateAxiosInstance,
 } from '../services/axios.service';
+import {BannerAD} from '../lib/ad/BannerAd';
 
 function MyPageScreen({
   navigation,
@@ -85,6 +86,9 @@ function MyPageScreen({
             color: '#FF2222',
           }),
         ]}
+        <View className="mt-5">
+          <BannerAD />
+        </View>
       </View>
       <Modal
         animationType="none"

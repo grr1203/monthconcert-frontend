@@ -14,6 +14,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import axios from 'axios';
 import {checkLogin} from '../services/login.service';
 import {baseUrl} from '../services/axios.service';
+import {BannerAD} from '../lib/ad/BannerAd';
 
 function CalendarScreen({
   navigation,
@@ -79,7 +80,7 @@ function CalendarScreen({
   };
 
   return (
-    <SafeAreaView style={{backgroundColor: Colors.lighter}}>
+    <SafeAreaView style={styles.screen}>
       <StatusBar
         barStyle={false ? 'light-content' : 'dark-content'}
         backgroundColor={Colors.lighter}
@@ -167,6 +168,7 @@ function CalendarScreen({
           </View>
         </View>
       </ScrollView>
+      <BannerAD />
     </SafeAreaView>
   );
 }
@@ -175,6 +177,10 @@ export default CalendarScreen;
 const fontFamily = 'Pretendard-Regular'; // UhBeeZZIBA-Regular
 const fontWeight = '600';
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.lighter,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

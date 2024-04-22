@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import WebView from 'react-native-webview';
 import {RouteProp} from '@react-navigation/native';
-import {interstitial} from '../../services/ad.service';
+import {interstitialAD} from '../../lib/ad/ad.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function InstagramScreen({
@@ -12,7 +12,7 @@ function InstagramScreen({
   const {postingUrl} = route!.params;
 
   useEffect(() => {
-    interstitial.load();
+    interstitialAD.load();
     (async () => {
       // 2024-01-01 5 형식
       const adCountString = await AsyncStorage.getItem(
@@ -31,7 +31,7 @@ function InstagramScreen({
         );
         return;
       } else {
-        await interstitial.show();
+        await interstitialAD.show();
       }
     })();
   }, []);

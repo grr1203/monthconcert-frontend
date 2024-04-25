@@ -12,10 +12,10 @@ export async function followArtist(artistIdx: number, follow: boolean) {
   console.log('[res stauts]', res.status);
 }
 
-export async function followConcert(concertIdx: number, follow: boolean) {
+export async function followConcert(concertIdx: number, save: boolean) {
   const res = await privateAxiosInstance.post(
     '/concert/save',
-    {concertIdx, follow},
+    {concertIdx, save},
     {headers: await getJWTHeaderFromLocalStorage()},
   );
   console.log('[res status]', res.status);

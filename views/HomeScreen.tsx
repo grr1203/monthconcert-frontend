@@ -9,7 +9,14 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import axios from 'axios';
-import {baseUrl} from '../services/axios.service';
+import {
+  baseUrl,
+  getJWTHeaderFromLocalStorage,
+  privateAxiosInstance,
+} from '../services/axios.service';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import {checkLogin} from '../services/login.service';
+import {followArtist, followConcert} from '../services/follow.service';
 
 function HomeScreen({
   navigation,
@@ -18,14 +25,21 @@ function HomeScreen({
   const [loading, setLoading] = useState(false);
 
   // 콘서트 목록 조회
-  const getCalendar = async (year: number, month: number, first: boolean) => {
-    console.log('[getCalendar]', year, month);
+  const getCalendar = async (
+    year: number,
+    month: number,
+    first: boolean,
+    userIdx?: number,
+  ) => {
+    console.log('[getCalendar]', year, month, userIdx);
     if (loading) {
       return;
     }
     setLoading(true);
 
-    const res = await axios.get(`${baseUrl}/calendar`, {params: {year, month}});
+    const res = await axios.get(`${baseUrl}/calendar`, {
+      params: {year, month, userIdx},
+    });
     console.log('[res data]', res.data);
 
     const concertDayArray = Object.keys(res.data.monthConcert);
@@ -42,6 +56,7 @@ function HomeScreen({
 
         // 각 날짜의 콘서트 목록에서 하나씩 추출
         res.data.monthConcert[day].forEach((concert: any) => {
+          // console.log('[concert]', concert);
           // 재랜더링시 중복 제거
           if (concertArray.some(oldConcert => oldConcert.idx === concert.idx)) {
             return;
@@ -53,6 +68,9 @@ function HomeScreen({
             artistAccount: concert.artistAccount,
             postingImageUrl: concert.posting_img,
             postingUrl: concert.posting_url,
+            artistIdx: concert.artist_idx,
+            artistFollow: concert.artistFollow,
+            concertFollow: concert.concertFollow,
             date: concert.date,
           });
         });
@@ -65,8 +83,21 @@ function HomeScreen({
   useEffect(() => {
     // calendar api 호출 (check login token)
     const date = new Date();
-    (async () =>
-      await getCalendar(date.getFullYear(), date.getMonth() + 1, true))();
+    (async () => {
+      try {
+        const res = await privateAxiosInstance.get('/user', {
+          headers: await getJWTHeaderFromLocalStorage(),
+        });
+        await getCalendar(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          true,
+          res.data.user.idx,
+        );
+      } catch (err) {
+        await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
@@ -75,7 +106,7 @@ function HomeScreen({
 
     // 마지막 스크롤 감지
     if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 20) {
-      const currentDate = new Date(concertArray[concertArray.length - 1].date);
+      const currentDate = new Date(concertArray[concertArray.length - 1]?.date);
       const nextDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
@@ -101,7 +132,13 @@ function HomeScreen({
         </View>
         <View className="border-b border-gray-100 w-screen" />
         <View className="flex flex-col items-center justify-center">
-          {concertArray.map(concert => ConcertCard({...concert, navigation}))}
+          {concertArray.map(concert => (
+            <ConcertCard
+              {...concert}
+              navigation={navigation}
+              key={concert.idx}
+            />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -112,17 +149,40 @@ function ConcertCard({
   idx,
   artistName,
   artistAccount,
+  artistIdx,
+  date,
   postingImageUrl,
   postingUrl,
+  artistFollow,
+  concertFollow,
   navigation,
 }: {
   idx: number;
   artistName: string;
   artistAccount: string;
+  artistIdx: number;
+  date: string;
   postingImageUrl: string;
   postingUrl: string;
+  artistFollow: boolean;
+  concertFollow: boolean;
   navigation: any;
 }) {
+  const [star, setStar] = useState(artistFollow);
+  const [heart, setHeart] = useState(concertFollow);
+  const dateArray = date.split(' ')[0].split('-');
+
+  const handleStar = async () => {
+    await checkLogin(navigation);
+    await followArtist(artistIdx, !artistFollow);
+    setStar(!star);
+  };
+  const handleHeart = async () => {
+    await checkLogin(navigation);
+    await followConcert(idx, !concertFollow);
+    setHeart(!heart);
+  };
+
   return (
     <View
       key={idx}
@@ -134,8 +194,33 @@ function ConcertCard({
           className="w-80 h-80 rounded-md"
         />
       </TouchableOpacity>
-      <Text className="font-bold text-xl text-[#333] pt-4">{artistName}</Text>
-      <Text className="text-[#777] mb-8">@{artistAccount}</Text>
+      <View className="w-80 flex-row">
+        <View className="flex-1">
+          <View className="flex flex-row pt-4 pb-1">
+            <Text className="font-bold text-xl text-[#333]">{artistName}</Text>
+            <TouchableOpacity className="pt-1 pl-1" onPress={handleStar}>
+              <AntDesignIcon
+                name={star ? 'star' : 'staro'}
+                color={star ? '#FFC94A' : '#555'}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text className="text-[#777] mb-8">@{artistAccount}</Text>
+        </View>
+        <View className="flex-1 flex-row justify-end items-center mb-3">
+          <Text className="font-bold text-2xl text-[#555]">
+            {`${dateArray[1]}/${dateArray[2]}`}
+          </Text>
+          <TouchableOpacity className="pl-3" onPress={handleHeart}>
+            <AntDesignIcon
+              name={heart ? 'heart' : 'hearto'}
+              color={heart ? '#FF2F40' : '#E99'}
+              size={25}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
       <View className="border-8 border-gray-100 w-screen" />
     </View>
   );

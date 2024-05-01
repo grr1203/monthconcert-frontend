@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -85,20 +86,26 @@ function AddArtistScreen({navigation}: NativeStackScreenProps<any>) {
           좋아하는 아티스트가 등록되어 있는지 찾아보고 추가해보세요!
         </Text>
       ) : (
-        <View style={styles.searchResultContainer}>
-          <View style={styles.separator} />
-          {SearchedCount === 0 && (
-            <Text style={styles.noSearchResult}>검색 결과가 없습니다.</Text>
-          )}
-          {SearchedCount > 0 &&
-            searchedArtistArray.map(artist => SearchedArtist(artist))}
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => setAddModalVisible(true)}>
-            <OcticonsIcon style={styles.addButtonText} name="plus" size={20} />
-            <Text style={styles.addButtonText}>추가 요청</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView className="w-full h-5/6">
+          <View style={styles.searchResultContainer}>
+            <View style={styles.separator} />
+            {SearchedCount === 0 && (
+              <Text style={styles.noSearchResult}>검색 결과가 없습니다.</Text>
+            )}
+            {SearchedCount > 0 &&
+              searchedArtistArray.map(artist => SearchedArtist(artist))}
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => setAddModalVisible(true)}>
+              <OcticonsIcon
+                style={styles.addButtonText}
+                name="plus"
+                size={20}
+              />
+              <Text style={styles.addButtonText}>추가 요청</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       )}
       <BannerAD />
 
@@ -142,7 +149,7 @@ function AddArtistScreen({navigation}: NativeStackScreenProps<any>) {
 
 const SearchedArtist = (artist: Artist) => {
   return (
-    <View key={artist.artist_name} style={styles.artistConatiner}>
+    <View key={artist.instagram_account} style={styles.artistConatiner}>
       <View style={styles.artist}>
         <Text style={styles.artistName}>{artist.artist_name}</Text>
         <Text style={styles.artistAccount}>#{artist.instagram_account}</Text>
@@ -190,8 +197,6 @@ const styles = StyleSheet.create({
     color: '#AAA',
   },
   searchResultContainer: {
-    width: '100%',
-    flex: 19,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },

@@ -48,6 +48,7 @@ export async function checkLogin(navigation: any) {
       headers: await getJWTHeaderFromLocalStorage(),
     });
     console.log('[res data]', res.data);
+    return res.data;
   } catch (error) {
     // api 호출 실패 -> access token 갱신 실패 -> 로그인 화면으로 이동
     console.log('[error]', error);

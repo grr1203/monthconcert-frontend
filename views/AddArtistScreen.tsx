@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   containerAfterSearch: {
     flex: 1,
-    paddingTop: '20%',
+    paddingTop: '5%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#fff',

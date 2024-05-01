@@ -174,13 +174,13 @@ function ConcertCard({
 
   const handleStar = async () => {
     await checkLogin(navigation);
-    await followArtist(artistIdx, !artistFollow);
     setStar(!star);
+    await followArtist(artistIdx, !artistFollow);
   };
   const handleHeart = async () => {
     await checkLogin(navigation);
-    await followConcert(idx, !concertFollow);
     setHeart(!heart);
+    await followConcert(idx, !concertFollow);
   };
 
   return (

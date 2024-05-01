@@ -7,12 +7,12 @@ import OAuthScreen from './views/WebView/OAuthScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MypageScreen from './views/MyPageScreen';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AddArtistScreen from './views/AddArtistScreen';
 import InstagramScreen from './views/WebView/InstagramScreen';
 import CalendarScreen from './views/CalendarScreen';
 import HomeScreen from './views/HomeScreen';
 import {Platform} from 'react-native';
+import FavoriteScreen from './views/FavoriteScreen';
+import AddArtistScreen from './views/AddArtistScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -45,6 +45,11 @@ function App(): React.JSX.Element {
         <Stack.Screen
           name="InstagramWebView"
           component={InstagramScreen}
+          options={{headerTitle: '', headerBackTitleVisible: false}}
+        />
+        <Stack.Screen
+          name="AddArtist"
+          component={AddArtistScreen}
           options={{headerTitle: '', headerBackTitleVisible: false}}
         />
       </Stack.Navigator>
@@ -80,9 +85,9 @@ function HomeTabs() {
         options={{tabBarIcon: ({color}) => MyCalendarIcon(color)}}
       />
       <Tab.Screen
-        name="AddArtist"
-        component={AddArtistScreen}
-        options={{tabBarIcon: ({color}) => AddArtistIcon(color)}}
+        name="Favorite"
+        component={FavoriteScreen}
+        options={{tabBarIcon: ({color}) => FavoriteIcon(color)}}
       />
       <Tab.Screen
         name="MyPage"
@@ -98,8 +103,8 @@ const HomeIcon = (color: string) => (
 const MyCalendarIcon = (color: string) => (
   <OcticonsIcon name="calendar" size={30} color={color} />
 );
-const AddArtistIcon = (color: string) => (
-  <MaterialCommunityIcon name="account-music-outline" size={38} color={color} />
+const FavoriteIcon = (color: string) => (
+  <OcticonsIcon name="heart" size={28} color={color} />
 );
 const MyPageIcon = (color: string) => (
   <OcticonsIcon name="person" size={30} color={color} />

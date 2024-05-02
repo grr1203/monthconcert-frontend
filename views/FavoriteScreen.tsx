@@ -1,11 +1,14 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  FlatList,
   Image,
+  Modal,
   Platform,
   ScrollView,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {checkLogin} from '../services/login.service';
@@ -13,15 +16,20 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import axios from 'axios';
-import {baseUrl} from '../services/axios.service';
+import {
+  baseUrl,
+  getJWTHeaderFromLocalStorage,
+  privateAxiosInstance,
+} from '../services/axios.service';
 import {BannerAD} from '../lib/ad/BannerAd';
+import {followArtist} from '../services/follow.service';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();
 
 function FavoriteScreen({
   navigation,
 }: NativeStackScreenProps<any>): React.JSX.Element {
-  console.log('navigation f ', navigation.navigate);
   return (
     <SafeAreaView className="flex-1">
       <BannerAD />
@@ -57,9 +65,10 @@ function FavoriteScreen({
         />
       </Tab.Navigator>
       <TouchableOpacity
-        className="absolute bottom-4 right-0 w-44 bg-[#000] opacity-70 rounded-xl py-3 px-6 mx-5 mt-2 shadow-lg"
+        className="absolute bottom-4 right-0 w-44 flex-row bg-[#000] opacity-70 rounded-xl py-3 px-6 mx-5 mt-2 shadow-lg"
         onPress={() => navigation.navigate('AddArtist')}>
-        <Text className="text-white font-bold">+ 아티스트 추가 요청</Text>
+        <Text className="text-white font-bold">+ </Text>
+        <Text className="text-white font-bold"> 아티스트 추가 요청</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -134,20 +143,21 @@ const ConcertTab = ({navigation}: {navigation: any}) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    (async () => {
-      const data = await checkLogin(navigation);
-      const date = new Date();
-      await getCalendar(
-        date.getFullYear(),
-        date.getMonth() + 1,
-        true,
-        data.user.idx,
-      );
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const data = await checkLogin(navigation);
+        const date = new Date();
+        await getCalendar(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          true,
+          data.user.idx,
+        );
+      })();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
 
   const handleScroll = (event: any) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
@@ -224,9 +234,99 @@ const ConcertCard = ({
 // Tab 2
 //
 const ArtistTab = () => {
+  const [artistArray, setArtistArray] = useState<any[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const res = await privateAxiosInstance.get('/artist/follow', {
+          headers: await getJWTHeaderFromLocalStorage(),
+        });
+        console.log('[res data]', res.data);
+        setArtistArray(res.data.followArtistArray);
+      })();
+    }, []),
+  );
+
   return (
     <View>
-      <Text>ArtistTab</Text>
+      <FlatList
+        className="pt-2"
+        data={artistArray}
+        renderItem={({item}) => <ArtistRow item={item} />}
+        keyExtractor={item => item.idx}
+      />
+    </View>
+  );
+};
+const ArtistRow = ({item}: {item: any}) => {
+  const [currentArtist, setCurrentArtist] = useState<any>();
+  const [followModal, setFollowModal] = useState(false);
+  const [follow, setFollow] = useState(true);
+
+  return (
+    <View>
+      <View
+        key={item.instagram_account}
+        className="flex-row item-center justify-between px-6 py-2">
+        <Text className="text-base font-bold text-[#555]">
+          {item.artist_name}
+        </Text>
+        {follow ? (
+          <TouchableOpacity
+            className="bg-[#0195F7] px-5 py-2 rounded-lg"
+            onPress={() => {
+              setCurrentArtist(item);
+              setFollowModal(true);
+              //   handleFollow(item);
+            }}>
+            <Text className="text-white text-sm font-bold">팔로잉</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            className="bg-[#888] px-5 py-2 rounded-lg"
+            onPress={async () => {
+              setFollow(true);
+              await followArtist(item.idx, true);
+            }}>
+            <Text className="text-white text-sm font-bold">팔로잉</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={followModal}
+        onRequestClose={() => setFollowModal(!followModal)}>
+        <TouchableWithoutFeedback // 모달 바깥 부분 클릭 시 모달 닫기
+          onPress={() => setFollowModal(!followModal)}>
+          <View className="flex-1 justify-center items-center mt-5">
+            <View className="m-5 bg-gray-700 opacity-80 rounded-lg p-9 items-center shadow-lg">
+              <Text className="text-white mb-4 text-center">
+                {currentArtist?.artist_name} 님의 팔로우를 취소하시겠어요?
+              </Text>
+              <View className="flex-row mt-3">
+                <TouchableOpacity
+                  className="bg-red-500 rounded-full px-5 py-2.5 mx-2"
+                  onPress={async () => {
+                    setFollow(false);
+                    setFollowModal(!followModal);
+                    await followArtist(currentArtist.idx, false);
+                  }}>
+                  <Text className="text-white text-sm font-bold">
+                    팔로우 취소
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="bg-gray-800 rounded-full px-5 py-2.5 mx-2"
+                  onPress={() => setFollowModal(!followModal)}>
+                  <Text className="text-white text-sm font-bold">취소</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };

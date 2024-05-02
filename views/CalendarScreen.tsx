@@ -15,6 +15,7 @@ import axios from 'axios';
 import {checkLogin} from '../services/login.service';
 import {baseUrl} from '../services/axios.service';
 import {BannerAD} from '../lib/ad/BannerAd';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 function CalendarScreen({
   navigation,
@@ -22,13 +23,21 @@ function CalendarScreen({
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [concertObject, setConcertObject] = useState<any>({});
+  const [concertAllObject, setConcertAllObject] = useState<any>({});
+  const [concertMyObject, setConcertMyObject] = useState<any>({});
+  const [favorite, setFavorite] = useState(false);
 
   const getCalendar = async (year: number, month: number) => {
-    await checkLogin(navigation);
-    const res = await axios.get(`${baseUrl}/calendar`, {params: {year, month}});
+    const data = await checkLogin(navigation);
+    const userIdx = data.user.idx;
+    const res = await axios.get(`${baseUrl}/calendar`, {
+      params: {year, month, userIdx},
+    });
     console.log('[res data]', res.data);
     if (Object.keys(res.data.monthConcert).length > 0) {
       setConcertObject(res.data.monthConcert);
+      setConcertAllObject(res.data.monthConcert);
+      setConcertMyObject(res.data.followedArtistsConcert);
     } else if (Object.keys(res.data.monthConcert).length === 0) {
       setConcertObject({});
     }
@@ -79,6 +88,11 @@ function CalendarScreen({
     return newColor;
   };
 
+  const handleFavorite = () => {
+    setConcertObject(!favorite ? concertMyObject : concertAllObject);
+    setFavorite(!favorite);
+  };
+
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar
@@ -97,6 +111,16 @@ function CalendarScreen({
             <Text style={styles.headerMonth}>{`${currentMonth + 1}`}</Text>
             <TouchableOpacity onPress={goToNextMonth}>
               <Text style={styles.headerIcon}>{'>'}</Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex w-full items-end mr-7">
+            <TouchableOpacity
+              className="flex-row pl-4 pb-4"
+              onPress={handleFavorite}>
+              <EntypoIcon name="check" size={16} color="#666" />
+              <Text className="ml-1 text-[#666] font-bold">
+                관심있는 공연만 보기
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.weekHeader}>

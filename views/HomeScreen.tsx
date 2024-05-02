@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -17,6 +17,7 @@ import {
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import {checkLogin} from '../services/login.service';
 import {followArtist, followConcert} from '../services/follow.service';
+import {useFocusEffect} from '@react-navigation/native';
 
 function HomeScreen({
   navigation,
@@ -58,7 +59,10 @@ function HomeScreen({
         res.data.monthConcert[day].forEach((concert: any) => {
           // console.log('[concert]', concert);
           // 재랜더링시 중복 제거
-          if (concertArray.some(oldConcert => oldConcert.idx === concert.idx)) {
+          if (
+            first === false &&
+            concertArray.some(oldConcert => oldConcert.idx === concert.idx)
+          ) {
             return;
           }
 
@@ -75,31 +79,39 @@ function HomeScreen({
           });
         });
       });
-      setConcertArray([...concertArray, ...concertArrayToBeAdd]);
+      if (first) {
+        console.log('concertArrayToBeAdd', concertArrayToBeAdd);
+        setConcertArray([]);
+        setConcertArray([...concertArrayToBeAdd]);
+      } else {
+        setConcertArray([...concertArray, ...concertArrayToBeAdd]);
+      }
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    // calendar api 호출 (check login token)
-    const date = new Date();
-    (async () => {
-      try {
-        const res = await privateAxiosInstance.get('/user', {
-          headers: await getJWTHeaderFromLocalStorage(),
-        });
-        await getCalendar(
-          date.getFullYear(),
-          date.getMonth() + 1,
-          true,
-          res.data.user.idx,
-        );
-      } catch (err) {
-        await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      // calendar api 호출 (check login token)
+      const date = new Date();
+      (async () => {
+        try {
+          const res = await privateAxiosInstance.get('/user', {
+            headers: await getJWTHeaderFromLocalStorage(),
+          });
+          await getCalendar(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            true,
+            res.data.user.idx,
+          );
+        } catch (err) {
+          await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
+        }
+      })();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
 
   const handleScroll = (event: any) => {
     const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;

@@ -12,10 +12,19 @@ export async function followArtist(artistIdx: number, follow: boolean) {
   console.log('[res stauts]', res.status);
 }
 
-export async function followConcert(concertIdx: number, save: boolean) {
+export async function followConcert(concertIdx: number, follow: boolean) {
   const res = await privateAxiosInstance.post(
     '/concert/save',
-    {concertIdx, save},
+    {concertIdx, save: follow},
+    {headers: await getJWTHeaderFromLocalStorage()},
+  );
+  console.log('[res status]', res.status);
+}
+
+export async function followPopup(popupIdx: number, follow: boolean) {
+  const res = await privateAxiosInstance.post(
+    '/popup/likes',
+    {popupIdx, likes: follow},
     {headers: await getJWTHeaderFromLocalStorage()},
   );
   console.log('[res status]', res.status);

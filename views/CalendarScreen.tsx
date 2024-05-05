@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import axios from 'axios';
 import {checkLogin} from '../services/login.service';
 import {baseUrl} from '../services/axios.service';
 import {BannerAD} from '../lib/ad/BannerAd';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {useFocusEffect} from '@react-navigation/native';
 
 function CalendarScreen({
   navigation,
@@ -25,7 +25,12 @@ function CalendarScreen({
   const [concertObject, setConcertObject] = useState<any>({});
   const [concertAllObject, setConcertAllObject] = useState<any>({});
   const [concertMyObject, setConcertMyObject] = useState<any>({});
+  const [popupObject, setPopupObject] = useState<any>({});
+  const [popupAllObject, setPopupAllObject] = useState<any>({});
+  const [popupMyObject, setPopupMyObject] = useState<any>({});
   const [favorite, setFavorite] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('concert');
 
   const getCalendar = async (year: number, month: number) => {
     const data = await checkLogin(navigation);
@@ -33,7 +38,7 @@ function CalendarScreen({
     const res = await axios.get(`${baseUrl}/calendar`, {
       params: {year, month, userIdx},
     });
-    console.log('[res data]', res.data);
+    console.log('[res data concert]', res.data);
     if (Object.keys(res.data.monthConcert).length > 0) {
       setConcertObject(res.data.monthConcert);
       setConcertAllObject(res.data.monthConcert);
@@ -43,11 +48,30 @@ function CalendarScreen({
     }
   };
 
-  useEffect(() => {
-    const date = new Date();
-    getCalendar(date.getFullYear(), date.getMonth() + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigation]);
+  const getPopup = async (year: number, month: number) => {
+    const data = await checkLogin(navigation);
+    const userIdx = data.user.idx;
+    const res = await axios.get(`${baseUrl}/popup/calendar`, {
+      params: {year, month, userIdx},
+    });
+    console.log('[res data popup]', res.data.popupStore.byDay);
+    if (Object.keys(res.data.popupStore.byDay).length > 0) {
+      setPopupObject(res.data.popupStore.byDay);
+      setPopupAllObject(res.data.popupStore.byDay);
+      setPopupMyObject(res.data.likesPopupStore.byDay);
+    } else if (Object.keys(res.data.monthPopup).length === 0) {
+      setPopupObject({});
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const date = new Date();
+      getCalendar(date.getFullYear(), date.getMonth() + 1);
+      getPopup(date.getFullYear(), date.getMonth() + 1);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
 
   const goToPrevMonth = () => {
     const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
@@ -82,81 +106,95 @@ function CalendarScreen({
     const brightness = 0.65; // 명도
 
     const newColor = `hsl(${Math.floor(hue * 360)}, ${Math.floor(
-      saturation * 100,
+      saturation * 125,
     )}%, ${Math.floor(brightness * 100)}%)`;
 
     return newColor;
   };
 
   const handleFavorite = () => {
-    setConcertObject(!favorite ? concertMyObject : concertAllObject);
-    setFavorite(!favorite);
+    if (value === 'concert') {
+      setConcertObject(!favorite ? concertMyObject : concertAllObject);
+      setFavorite(!favorite);
+    } else if (value === 'popupStore') {
+      setPopupObject(!favorite ? popupMyObject : popupAllObject);
+      setFavorite(!favorite);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar
-        barStyle={false ? 'light-content' : 'dark-content'}
-        backgroundColor={Colors.lighter}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        nestedScrollEnabled={true}
-        style={{backgroundColor: Colors.lighter}}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={goToPrevMonth}>
-              <Text style={styles.headerIcon}>{'<'}</Text>
-            </TouchableOpacity>
-            <Text style={styles.headerMonth}>{`${currentMonth + 1}`}</Text>
-            <TouchableOpacity onPress={goToNextMonth}>
-              <Text style={styles.headerIcon}>{'>'}</Text>
-            </TouchableOpacity>
+    <SafeAreaView style={styles.screen} className="bg-[#FFF]">
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={goToPrevMonth}>
+            <Text style={styles.headerIcon}>{'<'}</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerMonth}>{`${currentMonth + 1}`}</Text>
+          <TouchableOpacity onPress={goToNextMonth}>
+            <Text style={styles.headerIcon}>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
+        <View className="flex-row w-full items-stretch z-10">
+          <View className="flex-1 flex ml-4">
+            <DropDownPicker
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdown}
+              open={open}
+              value={value}
+              items={[
+                {label: 'Concert', value: 'concert'},
+                {label: 'Popup Store', value: 'popupStore'},
+              ]}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setConcertObject}
+              placeholder="Concert"
+            />
           </View>
-          <View className="flex w-full items-end mr-7">
-            <TouchableOpacity
-              className="flex-row pl-4 pb-4"
-              onPress={handleFavorite}>
-              <EntypoIcon name="check" size={16} color="#666" />
-              <Text className="ml-1 text-[#666] font-bold">
-                관심있는 공연만 보기
+          <TouchableOpacity
+            className="flex-1 flex-row justify-end items-end pl-4 pb-4 mr-4"
+            onPress={handleFavorite}>
+            <EntypoIcon name="check" size={16} color="#666" />
+            <Text className="ml-1 text-[#666] font-bold">
+              관심있는 공연만 보기
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.weekHeader}>
+          {weekDays.map((day, index) => (
+            <TouchableOpacity key={index} style={styles.dayHeader}>
+              <Text style={[styles.headerDay, {color: getDayColor(index)}]}>
+                {day}
               </Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.weekHeader}>
-            {weekDays.map((day, index) => (
-              <TouchableOpacity key={index} style={styles.dayHeader}>
-                <Text style={[styles.headerDay, {color: getDayColor(index)}]}>
-                  {day}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.calendar}>
-            {calendar.map((week, index) => (
-              <View key={index} style={styles.week}>
-                {week.map((day, dayIndex) => {
-                  // 날짜 없는 날
-                  if (day === null) {
-                    return (
-                      <ScrollView
-                        key={dayIndex}
-                        style={[styles.day, styles.nullDay]}
-                      />
-                    );
-                  }
-
-                  // 요일 색 변경
-                  const dayColor = getDayColor(
-                    new Date(currentYear, currentMonth, day).getDay(),
-                  );
-
+          ))}
+        </View>
+        <View style={styles.calendar}>
+          {calendar.map((week, index) => (
+            <View key={index} style={styles.week}>
+              {week.map((day, dayIndex) => {
+                // 날짜 없는 날
+                if (day === null) {
                   return (
-                    <ScrollView key={dayIndex} style={styles.day}>
-                      <Text style={[styles.dayText, {color: dayColor}]}>
-                        {day}
-                      </Text>
-                      {concertObject[day] &&
+                    <ScrollView
+                      key={dayIndex}
+                      style={[styles.day, styles.nullDay]}
+                    />
+                  );
+                }
+
+                // 요일 색 변경
+                const dayColor = getDayColor(
+                  new Date(currentYear, currentMonth, day).getDay(),
+                );
+
+                return (
+                  <ScrollView key={dayIndex} style={styles.day}>
+                    <Text style={[styles.dayText, {color: dayColor}]}>
+                      {day}
+                    </Text>
+                    {value === 'concert'
+                      ? concertObject[day] &&
                         concertObject[day].map(
                           (concert: any, concertIndex: number) => {
                             return (
@@ -183,15 +221,42 @@ function CalendarScreen({
                               </TouchableOpacity>
                             );
                           },
+                        )
+                      : popupObject[day] &&
+                        popupObject[day].map(
+                          (popup: any, popupIndex: number) => {
+                            return (
+                              <TouchableOpacity
+                                onPress={() =>
+                                  navigation.navigate('InstagramWebView', {
+                                    postingUrl: popup.posting_url,
+                                  })
+                                }
+                                key={popupIndex}
+                                style={[styles.artistContainer]}>
+                                <Image
+                                  source={require('../assets/image/artistNameBackground.png')}
+                                  style={[
+                                    styles.artistBackground,
+                                    {tintColor: generateRandomColor()},
+                                  ]}
+                                />
+                                <View style={styles.artistOverlay}>
+                                  <Text style={styles.artistText}>
+                                    {popup.name}
+                                  </Text>
+                                </View>
+                              </TouchableOpacity>
+                            );
+                          },
                         )}
-                    </ScrollView>
-                  );
-                })}
-              </View>
-            ))}
-          </View>
+                  </ScrollView>
+                );
+              })}
+            </View>
+          ))}
         </View>
-      </ScrollView>
+      </View>
       <BannerAD />
     </SafeAreaView>
   );
@@ -201,15 +266,13 @@ export default CalendarScreen;
 const fontFamily = 'Pretendard-Regular'; // UhBeeZZIBA-Regular
 const fontWeight = '600';
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: Colors.lighter,
-  },
+  screen: {flex: 1},
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
+    backgroundColor: '#FEFEFE',
   },
   header: {
     flexDirection: 'row',
@@ -253,7 +316,7 @@ const styles = StyleSheet.create({
     fontWeight,
   },
   nullDay: {
-    backgroundColor: '#eee',
+    backgroundColor: '#F9F9F9',
   },
   day: {
     width: '14.2857%',
@@ -289,6 +352,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#FFFFFF',
   },
+  dropdown: {borderWidth: 0},
 });
 
 const daysInMonth = (year: number, month: number) =>

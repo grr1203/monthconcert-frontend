@@ -56,6 +56,14 @@ function FavoriteScreen({
           {props => <ConcertTab {...props} navigation={navigation} />}
         </Tab.Screen>
         <Tab.Screen
+          name="PopupTab"
+          options={{
+            tabBarIcon: ({color}) => PopupIcon(color),
+            tabBarIndicatorStyle: {backgroundColor: '#777'},
+          }}>
+          {props => <PopupTab {...props} navigation={navigation} />}
+        </Tab.Screen>
+        <Tab.Screen
           name="ArtistTab"
           component={ArtistTab}
           options={{
@@ -79,11 +87,12 @@ const ConcertIcon = (color: string) => (
 const ArtistIcon = (color: string) => (
   <MaterialIcon name="account-music" size={28} color={color} />
 );
+const PopupIcon = (color: string) => (
+  <MaterialIcon name="store" size={28} color={color} />
+);
 
 // Tab Part
-//
 // Tab 1
-//
 const ConcertTab = ({navigation}: {navigation: any}) => {
   const [concertArray, setConcertArray] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -104,7 +113,7 @@ const ConcertTab = ({navigation}: {navigation: any}) => {
     const res = await axios.get(`${baseUrl}/calendar`, {
       params: {year, month, userIdx},
     });
-    console.log('[res data]', res.data);
+    console.log('[res data concert]', res.data);
 
     const concertDayArray = Object.keys(res.data.followedArtistsConcert);
     const concertArrayToBeAdd: object[] = [];
@@ -232,7 +241,115 @@ const ConcertCard = ({
 };
 
 // Tab 2
-//
+const PopupTab = ({navigation}: {navigation: any}) => {
+  const [popupArray, setPopupArray] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const getPopup = async (userIdx: number, first: boolean) => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    console.log('user idx', userIdx);
+
+    const res = await privateAxiosInstance.get(`${baseUrl}/popup/likes`, {
+      headers: await getJWTHeaderFromLocalStorage(),
+    });
+    console.log('[res data popup]', res.data);
+
+    const popupArrayToBeAdd: object[] = [];
+    res.data.popupStoreArray.forEach((popup: any) => {
+      popupArrayToBeAdd.push({
+        idx: popup.idx,
+        name: popup.name,
+        place: popup.place,
+        from: popup.from,
+        to: popup.to,
+        postingUrl: popup.posting_url,
+        postingImageUrl: popup.posting_img,
+      });
+    });
+    if (first) {
+      setPopupArray([]);
+      setPopupArray([...popupArrayToBeAdd]);
+    } else {
+      setPopupArray([...popupArray, ...popupArrayToBeAdd]);
+    }
+    setLoading(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const data = await checkLogin(navigation);
+        await getPopup(data.user.idx, true);
+      })();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
+
+  const handleScroll = (event: any) => {
+    const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+
+    // 마지막 스크롤 감지
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - 20) {
+      // 다음 팝업 목록 조회
+      (async () => {
+        const data = await checkLogin(navigation);
+        await getPopup(data.user.idx, false);
+      })();
+    }
+  };
+
+  return (
+    <ScrollView onScroll={handleScroll}>
+      <View className="flex flex-row flex-wrap justify-center">
+        {popupArray.map(popup => (
+          <PopupCard key={popup.idx} {...popup} navigation={navigation} />
+        ))}
+      </View>
+    </ScrollView>
+  );
+};
+const PopupCard = ({
+  idx,
+  name,
+  from,
+  to,
+  postingImageUrl,
+  postingUrl,
+  navigation,
+}: {
+  idx: number;
+  name: string;
+  from: string;
+  to: string;
+  postingImageUrl: string;
+  postingUrl: string;
+  navigation: any;
+}) => {
+  return (
+    <View
+      key={idx}
+      className="w-[45%] items-center py-3 mx-2 mt-4 bg-[#FFF] rounded-md">
+      <TouchableOpacity
+        onPress={() => navigation.navigate('InstagramWebView', {postingUrl})}>
+        <Image
+          source={{uri: postingImageUrl}}
+          className="w-44 h-44 rounded-md mb-2"
+        />
+      </TouchableOpacity>
+      <View className="w-44 flex justify-between">
+        <Text className="font-bold text-lg text-[#444]">{name}</Text>
+        <Text className="mt-2 font-bold text-md tracking-tighter text-[#999]">
+          {`${from.split(' ')[0]} - ${to.split(' ')[0]}`}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+// Tab 3
 const ArtistTab = () => {
   const [artistArray, setArtistArray] = useState<any[]>([]);
 

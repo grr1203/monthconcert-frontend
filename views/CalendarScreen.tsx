@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Platform,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import axios from 'axios';
@@ -32,6 +33,63 @@ function CalendarScreen({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('concert');
 
+  let randomColorIndex = 0;
+  const result = [
+    '#D5A9D0',
+    '#D4A7CE',
+    '#C6B5D1',
+    '#BBC0D1',
+    '#B3D1E3',
+    '#A5D8ED',
+    '#A4D6DA',
+    '#B3DDCB',
+    '#C7E4C9',
+    '#D1DDB6',
+    '#E6EAB6',
+    '#F1E6B6',
+    '#F7E3B5',
+    '#F0D0C5',
+    '#E3C5A2',
+    '#BCB6B8',
+    '#E3C9CC',
+    '#BEC3C6',
+    '#BEDCAE',
+    '#FFB78C',
+    '#FFA07F',
+    '#FF906F',
+    '#FF7FA3',
+    '#EA77FF',
+    '#B17EFF',
+    '#8EA4FF',
+    '#7BB8FF',
+    '#6BD3FF',
+    '#AAC8A7',
+    '#8AFFEB',
+    '#9EF5D1',
+    '#84A1BE',
+    '#FFB78C',
+    '#FFA07F',
+    '#FF906F',
+    '#FF7FA3',
+    '#EDA1C1',
+    '#B17EFF',
+    '#8EA4FF',
+    '#7BB8FF',
+    '#6BD3FF',
+    '#8BCDCD',
+    '#F5B971',
+    '#9EF5D1',
+    '#60A9A6',
+    '#CBF181',
+    '#FFEE92',
+    '#FFCC6D',
+    '#FFB86C',
+    '#FF906F',
+    '#FF7FA3',
+    '#EDA1C1',
+    '#5D6EC7',
+  ];
+
   const getCalendar = async (year: number, month: number) => {
     const data = await checkLogin(navigation);
     const userIdx = data.user.idx;
@@ -54,7 +112,7 @@ function CalendarScreen({
     const res = await axios.get(`${baseUrl}/popup/calendar`, {
       params: {year, month, userIdx},
     });
-    console.log('[res data popup]', res.data.popupStore.byDay);
+    console.log('[res data popup]', res.data.popupStore.byDay?.[1]);
     if (Object.keys(res.data.popupStore.byDay).length > 0) {
       setPopupObject(res.data.popupStore.byDay);
       setPopupAllObject(res.data.popupStore.byDay);
@@ -100,17 +158,17 @@ function CalendarScreen({
         return '#444444';
     }
   };
-  const generateRandomColor = () => {
-    const hue = Math.random(); // 0부터 1까지의 랜덤한 색상 결정
-    const saturation = 0.45; // 채도
-    const brightness = 0.65; // 명도
+  // const generateRandomColor = () => {
+  //   const hue = Math.random(); // 0부터 1까지의 랜덤한 색상 결정
+  //   const saturation = 0.45; // 채도
+  //   const brightness = 0.65; // 명도
 
-    const newColor = `hsl(${Math.floor(hue * 360)}, ${Math.floor(
-      saturation * 125,
-    )}%, ${Math.floor(brightness * 100)}%)`;
+  //   const newColor = `hsl(${Math.floor(hue * 360)}, ${Math.floor(
+  //     saturation * 125,
+  //   )}%, ${Math.floor(brightness * 100)}%)`;
 
-    return newColor;
-  };
+  //   return newColor;
+  // };
 
   const handleFavorite = () => {
     if (value === 'concert') {
@@ -156,7 +214,7 @@ function CalendarScreen({
             onPress={handleFavorite}>
             <EntypoIcon name="check" size={16} color="#666" />
             <Text className="ml-1 text-[#666] font-bold">
-              관심있는 공연만 보기
+              관심있는 이벤트만 보기
             </Text>
           </TouchableOpacity>
         </View>
@@ -210,7 +268,10 @@ function CalendarScreen({
                                   source={require('../assets/image/artistNameBackground.png')}
                                   style={[
                                     styles.artistBackground,
-                                    {tintColor: generateRandomColor()},
+                                    {
+                                      tintColor:
+                                        result[randomColorIndex++ % 50],
+                                    },
                                   ]}
                                 />
                                 <View style={styles.artistOverlay}>
@@ -238,7 +299,10 @@ function CalendarScreen({
                                   source={require('../assets/image/artistNameBackground.png')}
                                   style={[
                                     styles.artistBackground,
-                                    {tintColor: generateRandomColor()},
+                                    {
+                                      tintColor:
+                                        result[randomColorIndex++ % 50],
+                                    },
                                   ]}
                                 />
                                 <View style={styles.artistOverlay}>
@@ -271,7 +335,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: Platform.OS === 'ios' ? 20 : '20%',
     backgroundColor: '#FEFEFE',
   },
   header: {
@@ -289,7 +353,7 @@ const styles = StyleSheet.create({
   },
   headerIcon: {
     fontFamily,
-    fontSize: 22,
+    fontSize: 30,
     color: '#888888',
   },
   calendar: {

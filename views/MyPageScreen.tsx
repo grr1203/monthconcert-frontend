@@ -121,7 +121,12 @@ function Menu(
   return (
     <TouchableOpacity key={text} style={styles.menuContainer} onPress={onPress}>
       <Text style={{...styles.menuText, ...menuStyle}}>{text}</Text>
-      <AntDesignIcon name="right" size={20} style={{...menuStyle}} />
+      <AntDesignIcon
+        name="right"
+        size={20}
+        style={{...menuStyle}}
+        color={'#888'}
+      />
     </TouchableOpacity>
   );
 }
@@ -151,11 +156,12 @@ const styles = StyleSheet.create({
   profileInfo: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 20,
+    color: '#444',
   },
   logoutButton: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 16,
-    color: 'grey',
+    color: '#888',
     paddingHorizontal: 10,
   },
   menuContainer: {
@@ -171,6 +177,7 @@ const styles = StyleSheet.create({
   menuText: {
     fontFamily: 'Pretendard-Regular',
     fontSize: 16,
+    color: '#444',
   },
   modalContainer: {
     flex: 1,

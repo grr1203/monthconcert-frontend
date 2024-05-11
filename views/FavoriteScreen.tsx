@@ -227,14 +227,28 @@ const ConcertCard = ({
         onPress={() => navigation.navigate('InstagramWebView', {postingUrl})}>
         <Image
           source={{uri: postingImageUrl}}
-          className="w-44 h-44 rounded-md mb-2"
+          className={
+            Platform.OS === 'ios'
+              ? 'w-44 h-44'
+              : 'w-40 h-40' + ' rounded-md mb-2'
+          }
         />
       </TouchableOpacity>
-      <View className="w-44 flex-row justify-between">
+      <View
+        className={
+          Platform.OS === 'ios'
+            ? 'w-44'
+            : 'w-40' + ' flex-row justify-between items-center'
+        }>
         <Text className="font-bold text-lg text-[#333]">
           {`${dateArray[1]}/${dateArray[2]}`}
         </Text>
-        <Text className="font-bold text-lg text-[#555]">{artistName}</Text>
+        <Text
+          className={`font-bold ${
+            Platform.OS === 'ios' ? 'text-lg' : 'text-base'
+          } text-[#555]`}>
+          {artistName}
+        </Text>
       </View>
     </View>
   );
@@ -336,11 +350,21 @@ const PopupCard = ({
         onPress={() => navigation.navigate('InstagramWebView', {postingUrl})}>
         <Image
           source={{uri: postingImageUrl}}
-          className="w-44 h-44 rounded-md mb-2"
+          className={`${
+            Platform.OS === 'ios' ? 'w-44 h-44' : 'w-40 h-40'
+          } rounded-md mb-2`}
         />
       </TouchableOpacity>
-      <View className="w-44 flex justify-between">
-        <Text className="font-bold text-lg text-[#444]">{name}</Text>
+      <View
+        className={`${
+          Platform.OS === 'ios' ? 'w-44' : 'w-40'
+        } flex justify-between`}>
+        <Text
+          className={`font-bold ${
+            Platform.OS === 'ios' ? 'text-lg' : ' text-base'
+          } text-[#444]`}>
+          {name}
+        </Text>
         <Text className="mt-2 font-bold text-md tracking-tighter text-[#999]">
           {`${from.split(' ')[0]} - ${to.split(' ')[0]}`}
         </Text>

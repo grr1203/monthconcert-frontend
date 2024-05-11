@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 10,
     borderRadius: 10,
+    color: '#222',
   },
   description: {
     fontFamily: 'NanumBarunGothic',

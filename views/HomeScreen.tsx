@@ -191,7 +191,7 @@ function HomeScreen({
       const nextDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() + 1,
-        currentDate.getDate(),
+        1,
       );
       // 다음 달 콘서트 목록 조회
       (async () =>

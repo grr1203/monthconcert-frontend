@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Image,
   ImageSourcePropType,
@@ -9,11 +9,22 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {handleAppleLogin} from '../services/login.service';
+import {handleAppleLogin, handleNaverLogin} from '../services/login.service';
+import NaverLogin from '@react-native-seoul/naver-login';
 
 function LoginScreen({
   navigation,
 }: NativeStackScreenProps<any>): React.JSX.Element {
+  useEffect(() => {
+    NaverLogin.initialize({
+      appName: 'monthconcert',
+      consumerKey: 'tExjEltbseFHIPqyF_1A',
+      consumerSecret: '2qQKkFur74',
+      serviceUrlSchemeIOS: 'monthconcert',
+      disableNaverAppAuthIOS: true,
+    });
+  }, []);
+
   return (
     <View style={styles.screen}>
       <Image
@@ -38,8 +49,7 @@ function LoginScreen({
         })}
         {SoicalLoginButton({
           platform: 'naver',
-          onPress: () =>
-            navigation.navigate('OAuthWebView', {platform: 'naver'}),
+          onPress: () => handleNaverLogin(navigation),
         })}
       </View>
     </View>

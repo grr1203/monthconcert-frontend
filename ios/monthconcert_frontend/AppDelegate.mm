@@ -3,6 +3,8 @@
 
 #import <React/RCTBundleURLProvider.h>
 
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -30,6 +32,13 @@
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+- (BOOL)application:(UIApplication *)application
+          openURL:(NSURL *)url
+          options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options 
+{
+   return [[NaverThirdPartyLoginConnection getSharedInstance] application:application openURL:url options:options];
 }
 
 @end

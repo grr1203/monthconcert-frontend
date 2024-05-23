@@ -7,12 +7,12 @@ import {baseUrl} from '../../services/axios.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Naver
-const NAVER = {
-  clientId: 'tExjEltbseFHIPqyF_1A',
-  redirectUri: 'monthconcert://',
-  state: 'RANDOM_STATE',
-};
-const NaverUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER.clientId}&redirect_uri=${NAVER.redirectUri}&state=${NAVER.state}`;
+// const NAVER = {
+//   clientId: 'tExjEltbseFHIPqyF_1A',
+//   redirectUri: 'monthconcert://',
+//   state: 'RANDOM_STATE',
+// };
+// const NaverUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER.clientId}&redirect_uri=${NAVER.redirectUri}&state=${NAVER.state}`;
 
 // Kakao
 const KAKAO = {
@@ -45,23 +45,23 @@ function OAuthScreen({
 
   try {
     switch (platform) {
-      case 'naver':
-        initUrl = NaverUrl;
-        handleMessage = async event => {
-          const url = event.nativeEvent.url;
-          const code = url.split('oauth_token=')[1];
-          console.log('url', url);
+      // case 'naver':
+      //   initUrl = NaverUrl;
+      //   handleMessage = async event => {
+      //     const url = event.nativeEvent.url;
+      //     const code = url.split('oauth_token=')[1];
+      //     console.log('url', url);
 
-          // 로그인 성공시 발급되는 code로 서버 토큰 발급
-          if (code) {
-            const res = await axios.post(`${baseUrl}/signin/naver`, {code});
-            console.log('[res data]', res.data);
-            await AsyncStorage.setItem('accessToken', res.data.accessToken);
-            await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
-            navigation!.navigate('Home');
-          }
-        };
-        break;
+      //     // 로그인 성공시 발급되는 code로 서버 토큰 발급
+      //     if (code) {
+      //       const res = await axios.post(`${baseUrl}/signin/naver`, {code});
+      //       console.log('[res data]', res.data);
+      //       await AsyncStorage.setItem('accessToken', res.data.accessToken);
+      //       await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
+      //       navigation!.navigate('Home');
+      //     }
+      //   };
+      //   break;
 
       case 'kakao':
         initUrl = KakaoUrl;

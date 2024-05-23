@@ -7,6 +7,7 @@ import {
 } from './axios.service';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NaverLogin from '@react-native-seoul/naver-login';
 
 export async function handleAppleLogin(
   navigation: NativeStackNavigationProp<any>,
@@ -38,6 +39,25 @@ export async function handleAppleLogin(
     } catch (error) {
       console.log('[error]', error);
     }
+  }
+}
+
+export async function handleNaverLogin(
+  navigation: NativeStackNavigationProp<any>,
+) {
+  const {failureResponse, successResponse} = await NaverLogin.login();
+  console.log('successResponse', successResponse);
+  console.log('failureResponse', failureResponse);
+
+  // 로그인 성공시 발급되는 naver access token으로 서버 토큰 발급
+  if (successResponse) {
+    const res = await axios.post(`${baseUrl}/signin/naver`, {
+      naverAccessToken: successResponse.accessToken,
+    });
+    console.log('[res data]', res.data);
+    await AsyncStorage.setItem('accessToken', res.data.accessToken);
+    await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
+    navigation!.navigate('Home');
   }
 }
 

@@ -18,6 +18,7 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.5)
   - hermes-engine/Pre-built (0.73.5)
   - libevent (2.1.12)
+  - naveridlogin-sdk-ios (4.2.1)
   - RCT-Folly (2022.05.16.00):
     - boost
     - DoubleConversion
@@ -1082,6 +1083,11 @@ PODS:
     - GoogleUserMessagingPlatform (= 2.3.0)
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - RNNaverLogin (4.0.1):
+    - glog
+    - naveridlogin-sdk-ios (= 4.2.1)
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - RNScreens (3.29.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1152,6 +1158,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGoogleMobileAds (from `../node_modules/react-native-google-mobile-ads`)
+  - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1162,6 +1169,7 @@ SPEC REPOS:
     - Google-Mobile-Ads-SDK
     - GoogleUserMessagingPlatform
     - libevent
+    - naveridlogin-sdk-ios
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1276,6 +1284,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNGoogleMobileAds:
     :path: "../node_modules/react-native-google-mobile-ads"
+  RNNaverLogin:
+    :path: "../node_modules/@react-native-seoul/naver-login"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
@@ -1294,6 +1304,7 @@ SPEC CHECKSUMS:
   GoogleUserMessagingPlatform: b1ad7bb1ee3ce64749d4fec24f667b36e45c396c
   hermes-engine: 1d1835b2cc54c381909d94d1b3c8e0a2f1a94a0e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  naveridlogin-sdk-ios: d5f9d92905a7e964976ebfdd665bee5fb75845c5
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
   RCTTypeSafety: 50efabe2b115c11ed03fbf3fd79e2f163ddb5d7c
@@ -1343,6 +1354,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: e99eaf3c4c01ad8ecb6125dd6f0cfd98871685b5
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNGoogleMobileAds: 6a1d0ffbf5532bc0efad36414619fa5bbedc155d
+  RNNaverLogin: d4bad65d55062561d22bec8cb43191f86ba9e47f
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNVectorIcons: 73ab573085f65a572d3b6233e68996d4707fd505
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

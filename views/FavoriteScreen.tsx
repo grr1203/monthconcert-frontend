@@ -163,6 +163,12 @@ const ConcertTab = ({navigation}: {navigation: any}) => {
           true,
           data.user.idx,
         );
+        await getCalendar(
+          date.getFullYear(),
+          date.getMonth() + 2,
+          false,
+          data.user.idx,
+        );
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),

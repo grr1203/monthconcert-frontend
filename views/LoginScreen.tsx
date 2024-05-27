@@ -12,6 +12,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   handleAppleLogin,
   handleGoogleLogin,
+  handleKakaoLogin,
   handleNaverLogin,
 } from '../services/login.service';
 import NaverLogin from '@react-native-seoul/naver-login';
@@ -59,8 +60,7 @@ function LoginScreen({
         })}
         {SoicalLoginButton({
           platform: 'kakao',
-          onPress: () =>
-            navigation.navigate('OAuthWebView', {platform: 'kakao'}),
+          onPress: () => handleKakaoLogin(navigation),
         })}
         {SoicalLoginButton({
           platform: 'naver',

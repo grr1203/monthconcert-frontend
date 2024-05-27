@@ -9,6 +9,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NaverLogin from '@react-native-seoul/naver-login';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {login} from '@react-native-seoul/kakao-login';
 
 export async function handleAppleLogin(
   navigation: NativeStackNavigationProp<any>,
@@ -79,6 +80,21 @@ export async function handleGoogleLogin(
     await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
     navigation!.navigate('Home');
   }
+}
+
+export async function handleKakaoLogin(
+  navigation: NativeStackNavigationProp<any>,
+) {
+  const token = await login();
+  console.log('token', token);
+
+  const res = await axios.post(`${baseUrl}/signin/kakao`, {
+    token: token.accessToken,
+  });
+  console.log('[res data]', res.data);
+  await AsyncStorage.setItem('accessToken', res.data.accessToken);
+  await AsyncStorage.setItem('refreshToken', res.data.refreshToken);
+  navigation!.navigate('Home');
 }
 
 export async function checkLogin(navigation: any) {

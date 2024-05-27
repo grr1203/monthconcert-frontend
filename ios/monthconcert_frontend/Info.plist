@@ -44,6 +44,14 @@
 				<string>com.googleusercontent.apps.1075559808467-6hmcv9csk9kd7rlq3ivqjrcbcerplkbq</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakao257a25f0bca41317bd1ed746f610ab83</string>
+			</array>
+		 </dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
@@ -104,5 +112,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>KAKAO_APP_KEY</key>
+	<string>257a25f0bca41317bd1ed746f610ab83</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakaokompassauth</string>
+		<string>storykompassauth</string>
+		<string>kakaolink</string>
+	</array>
 </dict>
 </plist>

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">monthconcert_frontend</string>
+    <string name="kakao_app_key">257a25f0bca41317bd1ed746f610ab83</string>
 </resources>

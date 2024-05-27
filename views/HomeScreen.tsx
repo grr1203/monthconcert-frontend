@@ -117,6 +117,12 @@ function HomeScreen({
             true,
             res.data.user.idx,
           );
+          await getCalendar(
+            date.getFullYear(),
+            date.getMonth() + 2,
+            false,
+            res.data.user.idx,
+          );
         } catch (err) {
           await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
           await getPopupStore(date.getFullYear(), date.getMonth() + 1, true);

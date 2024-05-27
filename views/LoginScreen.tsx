@@ -36,7 +36,9 @@ function LoginScreen({
       ],
       offlineAccess: false,
       forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-      accountName: '', // [Android] specifies an account name on the device that should be used
+      accountName: '',
+      webClientId:
+        '1075559808467-m3csfhuqab93us90t07jb0l008rasfs3.apps.googleusercontent.com',
       iosClientId:
         '1075559808467-6hmcv9csk9kd7rlq3ivqjrcbcerplkbq.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
     });

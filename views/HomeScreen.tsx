@@ -125,6 +125,7 @@ function HomeScreen({
           );
         } catch (err) {
           await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
+          await getCalendar(date.getFullYear(), date.getMonth() + 2, false);
           await getPopupStore(date.getFullYear(), date.getMonth() + 1, true);
         }
       })();

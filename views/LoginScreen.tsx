@@ -9,8 +9,13 @@ import {
   View,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {handleAppleLogin, handleNaverLogin} from '../services/login.service';
+import {
+  handleAppleLogin,
+  handleGoogleLogin,
+  handleNaverLogin,
+} from '../services/login.service';
 import NaverLogin from '@react-native-seoul/naver-login';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 function LoginScreen({
   navigation,
@@ -22,6 +27,17 @@ function LoginScreen({
       consumerSecret: '2qQKkFur74',
       serviceUrlSchemeIOS: 'monthconcert',
       disableNaverAppAuthIOS: true,
+    });
+    GoogleSignin.configure({
+      scopes: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+      ],
+      offlineAccess: false,
+      forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+      accountName: '', // [Android] specifies an account name on the device that should be used
+      iosClientId:
+        '1075559808467-6hmcv9csk9kd7rlq3ivqjrcbcerplkbq.apps.googleusercontent.com', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
     });
   }, []);
 
@@ -39,8 +55,7 @@ function LoginScreen({
           })}
         {SoicalLoginButton({
           platform: 'google',
-          onPress: () =>
-            navigation.navigate('OAuthWebView', {platform: 'google'}),
+          onPress: () => handleGoogleLogin(navigation),
         })}
         {SoicalLoginButton({
           platform: 'kakao',

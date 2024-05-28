@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -21,7 +21,6 @@ import {
   followConcert,
   followPopup,
 } from '../services/follow.service';
-import {useFocusEffect} from '@react-navigation/native';
 
 function HomeScreen({
   navigation,
@@ -96,42 +95,40 @@ function HomeScreen({
     setLoading(false);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      // calendar api 호출 (check login token)
-      const date = new Date();
-      (async () => {
-        try {
-          const res = await privateAxiosInstance.get('/user', {
-            headers: await getJWTHeaderFromLocalStorage(),
-          });
-          await getCalendar(
-            date.getFullYear(),
-            date.getMonth() + 1,
-            true,
-            res.data.user.idx,
-          );
-          await getPopupStore(
-            date.getFullYear(),
-            date.getMonth() + 1,
-            true,
-            res.data.user.idx,
-          );
-          await getCalendar(
-            date.getFullYear(),
-            date.getMonth() + 2,
-            false,
-            res.data.user.idx,
-          );
-        } catch (err) {
-          await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
-          await getCalendar(date.getFullYear(), date.getMonth() + 2, false);
-          await getPopupStore(date.getFullYear(), date.getMonth() + 1, true);
-        }
-      })();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []),
-  );
+  useEffect(() => {
+    // calendar api 호출 (check login token)
+    const date = new Date();
+    (async () => {
+      try {
+        const res = await privateAxiosInstance.get('/user', {
+          headers: await getJWTHeaderFromLocalStorage(),
+        });
+        await getCalendar(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          true,
+          res.data.user.idx,
+        );
+        await getPopupStore(
+          date.getFullYear(),
+          date.getMonth() + 1,
+          true,
+          res.data.user.idx,
+        );
+        await getCalendar(
+          date.getFullYear(),
+          date.getMonth() + 2,
+          false,
+          res.data.user.idx,
+        );
+      } catch (err) {
+        await getCalendar(date.getFullYear(), date.getMonth() + 1, true);
+        await getCalendar(date.getFullYear(), date.getMonth() + 2, false);
+        await getPopupStore(date.getFullYear(), date.getMonth() + 1, true);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const getPopupStore = async (
     year: number,
